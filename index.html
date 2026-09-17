@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex, nofollow">
+	<title>Gửi Phương một điều nhỏ</title>
+	<style>
+		:root {
+			--pink: #ff4f84;
+			--deep-pink: #e93670;
+			--ink: #492638;
+			--paper: rgba(255, 255, 255, 0.86);
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			min-height: 100vh;
+			margin: 0;
+			overflow: hidden;
+			color: var(--ink);
+			font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+			background: #ffd9e5;
+		}
+
+		.sky {
+			position: fixed;
+			inset: 0;
+			overflow: hidden;
+			background:
+				radial-gradient(circle at 15% 15%, #fff5f8 0 8%, transparent 26%),
+				radial-gradient(circle at 88% 82%, #ffb8ce 0 7%, transparent 28%),
+				linear-gradient(135deg, #ffc2d5 0%, #fff0f4 48%, #ffb5cc 100%);
+		}
+
+		.sky::before, .sky::after {
+			position: absolute;
+			content: "";
+			width: 42vw;
+			height: 42vw;
+			border: 1px solid rgba(255, 255, 255, .34);
+			border-radius: 50%;
+			transform: rotate(25deg);
+		}
+
+		.sky::before { top: -20vw; left: -11vw; }
+		.sky::after { right: -14vw; bottom: -23vw; }
+
+		.heart {
+			position: absolute;
+			color: rgba(255, 255, 255, .72);
+			animation: float 9s linear infinite;
+			user-select: none;
+		}
+
+		.heart:nth-child(1) { left: 8%; font-size: 20px; animation-delay: -2s; }
+		.heart:nth-child(2) { left: 27%; font-size: 32px; animation-delay: -6s; }
+		.heart:nth-child(3) { left: 72%; font-size: 24px; animation-delay: -4s; }
+		.heart:nth-child(4) { left: 90%; font-size: 42px; animation-delay: -8s; }
+
+		@keyframes float {
+			from { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+			15% { opacity: .9; }
+			to { transform: translateY(-20vh) rotate(25deg); opacity: 0; }
+		}
+
+		.music-button {
+			position: fixed;
+			z-index: 3;
+			top: 18px;
+			right: 18px;
+			width: 46px;
+			height: 46px;
+			border: 2px solid white;
+			border-radius: 50%;
+			color: white;
+			background: rgba(233, 54, 112, .45);
+			cursor: pointer;
+			font-size: 20px;
+			transition: transform .2s ease, background .2s ease;
+		}
+
+		.music-button:hover { transform: scale(1.08); background: var(--deep-pink); }
+		.music-button.playing { animation: music-pulse 1.5s ease-in-out infinite; }
+
+		@keyframes music-pulse {
+			50% { box-shadow: 0 0 0 8px rgba(255, 255, 255, .16); }
+		}
+
+		.card {
+			position: relative;
+			z-index: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			width: min(92vw, 650px);
+			min-height: 100vh;
+			margin: auto;
+			padding: 32px 18px;
+			text-align: center;
+		}
+
+		.eyebrow {
+			margin: 0 0 18px;
+			color: var(--deep-pink);
+			font-size: .78rem;
+			font-weight: 700;
+			letter-spacing: .18em;
+			text-transform: uppercase;
+		}
+
+		.message-box {
+			width: 100%;
+			min-height: 190px;
+			padding: 34px 24px 28px;
+			border: 1px solid rgba(255, 255, 255, .82);
+			border-radius: 24px;
+			background: var(--paper);
+			box-shadow: 0 20px 60px rgba(160, 43, 82, .2);
+			backdrop-filter: blur(12px);
+		}
+
+		h1 {
+			margin: 0;
+			color: var(--deep-pink);
+			font-family: Georgia, serif;
+			font-size: clamp(2rem, 7vw, 4.2rem);
+			line-height: 1.06;
+		}
+
+		#message {
+			min-height: 58px;
+			margin: 20px 0 0;
+			font-size: clamp(1.08rem, 3.5vw, 1.42rem);
+			line-height: 1.5;
+		}
+
+		#message.show { animation: appear .55s ease both; }
+
+		@keyframes appear {
+			from { transform: translateY(10px); opacity: 0; }
+			to { transform: translateY(0); opacity: 1; }
+		}
+
+		.actions {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 12px;
+			margin-top: 26px;
+		}
+
+		button.action {
+			min-width: 132px;
+			padding: 13px 20px;
+			border: 0;
+			border-radius: 999px;
+			color: white;
+			background: var(--pink);
+			font: inherit;
+			font-weight: 700;
+			cursor: pointer;
+			box-shadow: 0 8px 18px rgba(233, 54, 112, .2);
+			transition: transform .2s ease, background .2s ease;
+		}
+
+		button.action:hover { transform: translateY(-3px); background: var(--deep-pink); }
+		#no-button { color: var(--deep-pink); background: white; }
+		#no-button:hover { background: #fff4f7; }
+
+		.progress {
+			width: 130px;
+			height: 5px;
+			margin-top: 25px;
+			overflow: hidden;
+			border-radius: 9px;
+			background: rgba(255, 255, 255, .55);
+		}
+
+		#progress-bar {
+			width: 10%;
+			height: 100%;
+			border-radius: inherit;
+			background: var(--deep-pink);
+			transition: width .35s ease;
+		}
+
+		.signature { margin: 22px 0 0; color: rgba(73, 38, 56, .65); font-size: .9rem; }
+		.celebrate { animation: celebrate .8s ease both; }
+
+		@keyframes celebrate {
+			0% { transform: scale(.9); }
+			60% { transform: scale(1.05); }
+			100% { transform: scale(1); }
+		}
+
+		#youtube-player { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+		@media (max-width: 420px) {
+			.message-box { padding: 30px 16px 24px; }
+			.actions { margin-top: 18px; }
+			button.action { min-width: 120px; }
+		}
+	</style>
+</head>
+<body>
+	<div class="sky" aria-hidden="true">
+		<span class="heart">♡</span><span class="heart">♥</span>
+		<span class="heart">♡</span><span class="heart">♥</span>
+	</div>
+
+	<button id="music-button" class="music-button" type="button" aria-label="Bật nhạc" title="Bật hoặc tắt nhạc">♫</button>
+
+	<main class="card">
+		<p class="eyebrow">Một lời nhắn nhỏ dành cho Phương</p>
+		<section class="message-box" aria-live="polite">
+			<h1 id="title">Phương ơi...</h1>
+			<p id="message">Cậu iuuu của tớ</p>
+			<div class="actions">
+				<button id="yes-button" class="action" type="button">Đồng ý ♡</button>
+				<button id="no-button" class="action" type="button">Để tớ nghĩ đã</button>
+			</div>
+		</section>
+		<div class="progress" aria-label="Tiến trình lời nhắn"><div id="progress-bar"></div></div>
+		<p class="signature">Từ một người thích cậu rất nhiều</p>
+	</main>
+
+	<div id="youtube-player" aria-hidden="true"></div>
+
+	<script>
+		const stages = [
+			{
+				message: "Cậu iuuu của tớ",
+				answers: ["Ơi"]
+			},
+			{
+				message: "mà cậu ơi tớ thích cậu nhìu lắm đóa",
+				answers: ["tớ cũm thích cậu nhìu", "tớ thích cậu siu siu nhìu"]
+			},
+			{
+				message: "tớ thích mọi thứ về cậu",
+				answers: ["tớ vẫn xem nè"]
+			},
+			{
+				message: "cậu đồng ý làm người yêu tớ nhá",
+				answers: ["có đồng ý", "kó tớ đồng ý"]
+			}
+		];
+		const youtubeId = "GhrpnMdSG6s";
+		let step = 0;
+		let screen = "questions";
+		let player;
+		let isPlaying = false;
+
+		const message = document.getElementById("message");
+		const title = document.getElementById("title");
+		const yesButton = document.getElementById("yes-button");
+		const noButton = document.getElementById("no-button");
+		const progressBar = document.getElementById("progress-bar");
+		const musicButton = document.getElementById("music-button");
+
+		function showMessage(text) {
+			message.classList.remove("show");
+			void message.offsetWidth;
+			message.textContent = text;
+			message.classList.add("show");
+			progressBar.style.width = `${Math.min((step + 1) / stages.length * 100, 100)}%`;
+		}
+
+		function renderStage() {
+			const answers = stages[step].answers;
+			yesButton.textContent = answers[0];
+			noButton.textContent = answers[1] || "";
+			noButton.hidden = answers.length < 2;
+			showMessage(stages[step].message);
+		}
+
+		function chooseAnswer(event) {
+			if (screen === "rejected") {
+				title.textContent = "Yêu cậu nhất ♡";
+				message.textContent = "rứa là Phương iu dễ thương cũm đồng ý lời tỏ tình của tớ rùi hihi💕💕💕";
+				document.querySelector(".message-box").classList.add("celebrate");
+				yesButton.textContent = "Mãi bên nhau cậu nhé ♡";
+				screen = "confirmed";
+				return;
+			}
+
+			if (screen === "confirmed") {
+				screen = "study";
+				title.textContent = "Vừa học vừa yêu nhó ♡";
+				message.textContent = "Mình cùng nhau vừa học vừa yêu nhó, không học tập sa sút nỏ!";
+				yesButton.textContent = "otee";
+				noButton.hidden = true;
+				progressBar.style.width = "100%";
+				return;
+			}
+
+			if (screen === "study") {
+				screen = "messenger";
+				title.textContent = "Tớ chờ cậu tại mess 💌";
+				message.textContent = "Hãy lại mess trả lời tớ nhó, tớ chờ cậu tại mess.";
+				yesButton.hidden = true;
+				progressBar.style.width = "100%";
+				return;
+			}
+
+			if (step < stages.length - 1) {
+				step += 1;
+				renderStage();
+				return;
+			}
+			if (event?.currentTarget === noButton) {
+				title.textContent = "Ơ kìa...";
+				message.textContent = "cậu định từ chối tớ ờ bùn ghê nhưng hông coá mu hẹ hẹ.";
+				yesButton.textContent = "Hẹ hẹ, tiếp tục nha";
+				noButton.hidden = true;
+				screen = "rejected";
+				return;
+			}
+			title.textContent = "Yêu cậu nhất ♡";
+			message.textContent = "rứa là Phương iu dễ thương cũm đồng ý lời tỏ tình của tớ rùi hihi💕💕💕 ";
+			document.querySelector(".message-box").classList.add("celebrate");
+			yesButton.textContent = "Mãi bên nhau cậu nhé ♡";
+			noButton.hidden = true;
+			screen = "confirmed";
+		}
+
+		yesButton.addEventListener("click", chooseAnswer);
+		noButton.addEventListener("click", chooseAnswer);
+		renderStage();
+
+		function onYouTubeReady() {
+			player = new YT.Player("youtube-player", {
+				videoId: youtubeId,
+				playerVars: { loop: 1, playlist: youtubeId },
+				events: { onReady: event => event.target.setVolume(35) }
+			});
+		}
+
+		musicButton.addEventListener("click", () => {
+			if (!player || !player.playVideo) return;
+			if (isPlaying) {
+				player.pauseVideo();
+				musicButton.classList.remove("playing");
+				musicButton.setAttribute("aria-label", "Bật nhạc");
+			} else {
+				player.playVideo();
+				musicButton.classList.add("playing");
+				musicButton.setAttribute("aria-label", "Tắt nhạc");
+			}
+			isPlaying = !isPlaying;
+		});
+
+		const youtubeScript = document.createElement("script");
+		youtubeScript.src = "https://www.youtube.com/iframe_api";
+		document.head.appendChild(youtubeScript);
+		window.onYouTubeIframeAPIReady = onYouTubeReady;
+	</script>
+</body>
+</html>
